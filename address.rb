@@ -1,5 +1,5 @@
 # A person participating in a transaction and how many billcoins they have
-class User
+class Address
 	#Who is sending billcoins
 	@name
 	
