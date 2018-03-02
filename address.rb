@@ -4,12 +4,17 @@ class Address
 	@name
 	
 	#Number of billcoins sent
-	@num_billcoins
+	@num_billcoins = 0
 	
 	#Constructor
 	def initialize(n,b)
 		@name = n
 		@num_billcoins = b
+	end
+	
+	#Constructor
+	def initialize(n)
+		@name = n.strip
 	end
 	
 	#Prints all the fields of the user

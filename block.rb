@@ -3,6 +3,7 @@
 # Block Class
 # Holds all the values that a block  in a Billcoin blockchain has
 require_relative 'transaction'
+require_relative 'address'
 
 class Block
 	#Block Number
@@ -34,6 +35,7 @@ class Block
 		@transaction_array = seperate_transactions
 		@num_transactions = (@transaction_array.count / 3)
 		finalize_transactions
+		remove_duplicate_addresses
 		@timestamp = t
 		@current_hash = h
 	end
@@ -46,12 +48,59 @@ class Block
 	#Take array of delimited transaction criteria, organize them into transaction object, and store them in a new array
 	def finalize_transactions
 		i = 0
+		j = 0
 		#Array containing transaction objects
 		@transaction_final = Array.new
+		@address_array = Array.new #holds the name of every to and from address including duplicates
 		until i > @num_transactions
-			@transaction_final.insert(i, Transaction.new(@transaction_array[i],@transaction_array[i+1],@transaction_array[i+2]))
+			@transaction_final[i] = Transaction.new(@transaction_array[i],@transaction_array[i+1],@transaction_array[i+2])
+			@address_array[i-j] = Address.new(@transaction_array[i].strip)
+			@address_array[i+1-j] = Address.new(@transaction_array[i+1].strip)
 			i += 3
+			j += 1
 		end
+	end	
+	
+	#Removes duplicate addresses
+	#DOESN'T WORK YET HENRY REPEATS
+	def remove_duplicate_addresses
+		@address_array = @address_array.uniq
+		puts "address_array: #{@address_array[0].get_name}"
+		puts "address_array1: #{@address_array[1].get_name}"
+		if @address_array[2].nil?
+		else
+			puts "address_array2: #{@address_array[2].get_name}"
+		end
+		if @address_array[3].nil?
+		else
+			puts "address_array3: #{@address_array[3].get_name}"
+		end
+		if @address_array[4].nil?
+		else
+			puts "address_array4: #{@address_array[4].get_name}"
+		end
+		if @address_array[5].nil?
+		else
+			puts "address_array5: #{@address_array[5].get_name}"
+		end
+		if @address_array[6].nil?
+		else
+			puts "address_array6: #{@address_array[6].get_name}"
+		end
+		if @address_array[7].nil?
+		else
+			puts "address_array7: #{@address_array[7].get_name}"
+		end
+		if @address_array[8].nil?
+		else
+			puts "address_array8: #{@address_array[8].get_name}"
+		end
+		if @address_array[9].nil?
+		else
+			puts "address_array9: #{@address_array[9].get_name}"
+		end
+		
+		
 	end
 	
 	#Print all fields given from the input file
@@ -136,6 +185,10 @@ class Block
 	
 	def get_transaction_final
 		return @transaction_final
+	end
+	
+	def get_address_array
+		return @address_array
 	end
 	
 	#SETTERS
