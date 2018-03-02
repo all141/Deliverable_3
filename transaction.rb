@@ -19,6 +19,14 @@ class Transaction
 		@num_billcoins = n
 	end
 	
+	#Prints all the fields of the transaction
+	def print_fields
+		puts "from_address: #{@from_address}"
+		puts "to_address: #{@to_address}"
+		puts "num_billcoins: #{@num_billcoins}"
+		puts ""
+	end
+	
 	#GETTERS
 	def get_from_address
 		return @from_address
