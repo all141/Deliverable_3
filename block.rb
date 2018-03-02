@@ -54,10 +54,10 @@ class Block
 		@address_array = Array.new #holds the name of every to and from address including duplicates
 		until i > @num_transactions
 			@transaction_final[i] = Transaction.new(@transaction_array[i],@transaction_array[i+1],@transaction_array[i+2])
-			@address_array[i-j] = Address.new(@transaction_array[i].strip)
-			@address_array[i+1-j] = Address.new(@transaction_array[i+1].strip)
+			@address_array[j] = Address.new(@transaction_array[i].strip)
+			@address_array[j+1] = Address.new(@transaction_array[i+1].strip)
 			i += 3
-			j += 1
+			j += 2
 		end
 	end	
 	
