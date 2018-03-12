@@ -27,13 +27,35 @@ if(result == -1)
 	exit
 end
 
+def verifyTime block
+	if @previous_line == ""
+		return 1
+	end
+	
+	old_time = @previous_line.split("|")[3]
+	new_time = block.get_timestamp()
+	
+	if new_time.split(".")[0].to_i > old_time.split(".")[0].to_i
+		return 1
+	end
+	
+	if new_time.split(".")[0].to_i == old_time.split(".")[0].to_i
+		if new_time.split(".")[1].to_i > old_time.split(".")[1].to_i
+			return 1
+		end
+	end
+	
+	puts "Line #{@number}: Previous timestamp #{old_time} >= new timestamp #{new_time}"
+	return -1
+end
+
 def verifyHash block
 	
 	totalFields = 0
 	
 	if @number != 0
 		if @previous_line.split("|")[4].split("\n")[0] != block.get_previous_hash()
-			puts "Line #{@number}: The hash of block #{@number - 1} stored on line #{@number} does not match. #{block.get_previous_hash()} =/= #{@previous_line.split("|")[4].split("\n")[0]}."
+			puts "Line #{@number}: The hash of block #{@number - 1} stored on line #{@number} does not match. #{block.get_previous_hash()} =/= #{@previous_line.split("|")[4].split("\n")[0]}"
 			return -1
 		end
 	else
@@ -46,7 +68,7 @@ def verifyHash block
     if  block.compare_current_hash() == 1
         return 1
     end
-    puts "Line #{@number}: The hash calculated for block #{@number} did not match the stored hash. #{block.get_calculated_hash()}=/=#{block.get_current_hash()}."
+    puts "Line #{@number}: The hash calculated for block #{@number} did not match the stored hash. #{block.get_calculated_hash()}=/=#{block.get_current_hash()}"
     return -1
 	
 end
@@ -69,7 +91,10 @@ while i < num_blocks  do
    current_block = Block.new(fields_array[0],fields_array[1],fields_array[2],fields_array[3],fields_array[4])
    # Do the checks on the current block
    
-   if verifyHash(current_block) == -1
+   if verifyTime(current_block) == -1
+	puts "BLOCKCHAIN INVALID"
+	exit	
+   elsif verifyHash(current_block) == -1
 	puts "BLOCKCHAIN INVALID"
 	exit
    end
