@@ -27,6 +27,104 @@ if(result == -1)
 	exit
 end
 
+def verifyFormat block, line
+
+	# Check the number of arguments in the line
+	lineSplit = line.split("|")
+	if (lineSplit.length != 5)
+		puts "Line #{@number}: Line #{@number} has #{lineSplit.length} args. It should be 5."
+        return -1
+	end
+	
+	# Check that the blocks are in order
+	if block.get_block_number() != @number.to_s
+		puts "Line #{@number}: The block #{@number} is block number #{block.get_block_number()}. The block and line number should match."
+        return -1
+	end
+	
+	# Check if the hashes are in the right form
+	if (block.get_current_hash() =~ /^([0-9]|[a-f]){1,4}$/) == nil
+		puts "Line #{@number}: The current #{block.get_current_hash()} on line #{@number} is bad."
+        return -1
+	end
+	
+	if (block.get_previous_hash() =~ /^([0-9]|[a-f]){1,4}$/) == nil
+		puts "Line #{@number}: The previous #{block.get_previous_hash()} on line #{@number} is bad."
+        return -1
+	end
+	
+	transactions = block.get_transaction_sequence
+	trans = transactions.split(":")
+	
+	trans.each{ |one_transaction|
+		from = one_transaction.split(">")[0]
+		to = one_transaction.split(">")[1].split("(")[0]
+		
+		if (/^[A-z]{1,6}$/ =~ from) == nil
+			puts "Line #{@number}: The sender '#{from}' on line #{@number} is invalid."
+            return -1
+		elsif (/^[A-z]{1,6}$/ =~ to) == nil
+			puts "Line #{@number}: The recipient '#{to}' on line #{@number} is invalid."            
+            return -1
+		end
+	}
+	
+	if @number == 0
+        if (transactions =~ /^SYSTEM>[A-z]{1,6}\([0-9]+\)$/) == nil
+            puts "Line #{@number}: The first block does not contain exactly one transaction the gives money from the SYSTEM to a valid user."
+            return -1
+        end
+    end
+	
+	if (transactions =~ /^(([A-z]{1,6}>[A-z]{1,6}\([0-9]+\))(:[A-z]{1,6}>[A-z]{1,6}\([0-9]+\))*(:SYSTEM>[A-z]{1,6}\([0-9]+\))$)|(^SYSTEM>[A-z]{1,6}\([0-9]+\))$/) == nil
+        puts "Line #{@number}: Block #{number} is bad. Check that there is no invalid characters and the last transaction is SYSTEM to a good user."
+        return -1;
+    end
+	
+	# Check the timestamp
+	if (block.get_timestamp() =~ /^[0-9]+.[0-9]+$/) == nil
+        puts "Line #{@number}: The timestamp #{block.get_timestamp()} is invalid."
+        return -1
+    end
+	
+    return 1
+	
+end
+
+def verifyBalance block
+	transactions = block.get_transaction_sequence
+	trans = transactions.split(":")
+	
+	trans.each{ |one_transaction|
+		from = one_transaction.split(">")[0]
+		to = one_transaction.split(">")[1].split("(")[0]
+		amount = one_transaction.split(">")[1].split("(")[1].split(")")[0].to_i
+		
+		if @totals[to] == nil
+			@totals[to] = amount
+		else
+			@totals[to] += amount
+		end
+		
+		unless from == "SYSTEM"
+			if @totals[from] == nil
+				@totals[from] = amount * -1
+			else
+				@totals[from] -= amount
+			end
+		end
+	}
+	
+	@totals.each { |t|
+		if t[1] < 0
+			puts "Line #{@number}: Invalid block: After block #{@number} #{t[0]} has #{t[1]} billcoins."
+			return -1
+		end
+	}
+	
+	return 1
+end
+
 def verifyTime block
 	if @previous_line == ""
 		return 1
@@ -91,9 +189,15 @@ while i < num_blocks  do
    current_block = Block.new(fields_array[0],fields_array[1],fields_array[2],fields_array[3],fields_array[4])
    # Do the checks on the current block
    
-   if verifyTime(current_block) == -1
+   if verifyFormat(current_block, lines_array[i]) == -1
+	puts "BLOCKCHAIN INVALID"
+	exit
+   elsif verifyTime(current_block) == -1
 	puts "BLOCKCHAIN INVALID"
 	exit	
+   elsif verifyBalance(current_block) == -1
+	puts "BLOCKCHAIN INVALID"
+	exit
    elsif verifyHash(current_block) == -1
 	puts "BLOCKCHAIN INVALID"
 	exit
@@ -104,3 +208,7 @@ while i < num_blocks  do
    @number += 1
    i += 1
 end
+
+@totals.each { |t|
+	puts "#{t[0]} : #{t[1]} billcoins"
+}
