@@ -34,8 +34,8 @@ class Block
 		@transaction_sequence = s
 		@transaction_array = seperate_transactions
 		@num_transactions = (@transaction_array.count / 3)
-		finalize_transactions
-		remove_duplicate_addresses
+		#finalize_transactions
+		#remove_duplicate_addresses
 		@timestamp = t
 		@current_hash = h
 	end
@@ -124,7 +124,10 @@ class Block
 		utf_array.map! do |x| (x ** 2000) * ((x + 2) ** 21) - ((x + 5) ** 3) end 
 		utf_sum = utf_array.inject(0){|sum,x| sum + x }
 		utf_mod = utf_sum % 65536
-		@calculated_hash = utf_hex = utf_mod.to_s(16)
+		@calculated_hash = utf_mod.to_s(16)
+		
+		#puts @calculated_hash
+		
 	end
 	
 	#Compares the given hash with the calculated hash
