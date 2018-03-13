@@ -1,5 +1,6 @@
 #Austin Linder & Jacqueline Marx
 #Deliverable 3 CS 1632
+require 'flamegraph'
 
 require_relative 'block' 
 require_relative 'ArgumentCheck'
@@ -170,45 +171,47 @@ def verifyHash block
     return -1
 	
 end
+Flamegraph.generate('verifiergraph.html') do
 
-lines_array = []
+	lines_array = []
 
-#Reads blockchain file and splits each line into a string representation of a block in the block array
-lines_array = File.readlines(input_file)
+	#Reads blockchain file and splits each line into a string representation of a block in the block array
+	lines_array = File.readlines(input_file)
 
-#Number of blocks in the file
-num_blocks = lines_array.count 
+	#Number of blocks in the file
+	num_blocks = lines_array.count 
 
-#Make array of block objects to perform actions on
-fields_array = []
+	#Make array of block objects to perform actions on
+	fields_array = []
 
-#Create block objects for array, seperate fields
-i = 0
-while i < num_blocks  do
-   fields_array = lines_array[i].split('|')
-   current_block = Block.new(fields_array[0],fields_array[1],fields_array[2],fields_array[3],fields_array[4])
-   # Do the checks on the current block
-   
-   if verifyFormat(current_block, lines_array[i]) == -1
-	puts "BLOCKCHAIN INVALID"
-	exit
-   elsif verifyTime(current_block) == -1
-	puts "BLOCKCHAIN INVALID"
-	exit	
-   elsif verifyBalance(current_block) == -1
-	puts "BLOCKCHAIN INVALID"
-	exit
-   elsif verifyHash(current_block) == -1
-	puts "BLOCKCHAIN INVALID"
-	exit
-   end
-   
-   # Update the previous_line to the current line if all checks have passed   
-   @previous_line = lines_array[i]
-   @number += 1
-   i += 1
+	#Create block objects for array, seperate fields
+	i = 0
+	while i < num_blocks  do
+	   fields_array = lines_array[i].split('|')
+	   current_block = Block.new(fields_array[0],fields_array[1],fields_array[2],fields_array[3],fields_array[4])
+	   # Do the checks on the current block
+	   
+	   if verifyFormat(current_block, lines_array[i]) == -1
+		puts "BLOCKCHAIN INVALID"
+		exit
+	   elsif verifyTime(current_block) == -1
+		puts "BLOCKCHAIN INVALID"
+		exit	
+	   elsif verifyBalance(current_block) == -1
+		puts "BLOCKCHAIN INVALID"
+		exit
+	   elsif verifyHash(current_block) == -1
+		puts "BLOCKCHAIN INVALID"
+		exit
+	   end
+	   
+	   # Update the previous_line to the current line if all checks have passed   
+	   @previous_line = lines_array[i]
+	   @number += 1
+	   i += 1
+	end
+
+	@totals.each { |t|
+		puts "#{t[0]} : #{t[1]} billcoins"
+	}
 end
-
-@totals.each { |t|
-	puts "#{t[0]} : #{t[1]} billcoins"
-}
