@@ -7,14 +7,6 @@ class ArgumentCheckTest < Minitest::Test
 	def setup
 		@checkArgs = ArgumentCheck::new
 	end
-
-	# The following methods are designed to test the return value for the arguments length
-	# This is used by the program to check that the user has entered a seed for the Random number generator.
-	# This method will return 1 when there is a valid number of arguments, and -1 otherwise
-	# x = number of arguments
-	# Test x < 1, return -1
-	# Test x = 1, return 1
-	# Test x > 1, return -1
 	
 	# This unit test with check that a  number of arguments that 
 	# is less than 1 shows an error (-1) result.
