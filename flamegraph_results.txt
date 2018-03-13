@@ -1,7 +1,0 @@
-1: block in
-2: verifyhash
-3: compare_current_hash
-4: create_hash
-5: map!
-6: block in create_hash
-7: **
