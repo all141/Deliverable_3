@@ -171,7 +171,8 @@ def verifyHash block
     return -1
 	
 end
-Flamegraph.generate('verifiergraph.html') do
+
+#Flamegraph.generate('verifiergraph.html') do
 
 	lines_array = []
 
@@ -214,4 +215,4 @@ Flamegraph.generate('verifiergraph.html') do
 	@totals.each { |t|
 		puts "#{t[0]} : #{t[1]} billcoins"
 	}
-end
+#end

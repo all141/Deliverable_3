@@ -34,8 +34,6 @@ class Block
 		@transaction_sequence = s
 		@transaction_array = seperate_transactions
 		@num_transactions = (@transaction_array.count / 3)
-		#finalize_transactions
-		#remove_duplicate_addresses
 		@timestamp = t
 		@current_hash = h
 	end
@@ -60,48 +58,6 @@ class Block
 			j += 2
 		end
 	end	
-	
-	#Removes duplicate addresses
-	#DOESN'T WORK YET HENRY REPEATS
-	def remove_duplicate_addresses
-		@address_array = @address_array.uniq
-		puts "address_array: #{@address_array[0].get_name}"
-		puts "address_array1: #{@address_array[1].get_name}"
-		if @address_array[2].nil?
-		else
-			puts "address_array2: #{@address_array[2].get_name}"
-		end
-		if @address_array[3].nil?
-		else
-			puts "address_array3: #{@address_array[3].get_name}"
-		end
-		if @address_array[4].nil?
-		else
-			puts "address_array4: #{@address_array[4].get_name}"
-		end
-		if @address_array[5].nil?
-		else
-			puts "address_array5: #{@address_array[5].get_name}"
-		end
-		if @address_array[6].nil?
-		else
-			puts "address_array6: #{@address_array[6].get_name}"
-		end
-		if @address_array[7].nil?
-		else
-			puts "address_array7: #{@address_array[7].get_name}"
-		end
-		if @address_array[8].nil?
-		else
-			puts "address_array8: #{@address_array[8].get_name}"
-		end
-		if @address_array[9].nil?
-		else
-			puts "address_array9: #{@address_array[9].get_name}"
-		end
-		
-		
-	end
 	
 	#Print all fields given from the input file
 	def print_initial_fields
@@ -139,19 +95,6 @@ class Block
 			return 0
 		end
 	end
-	
-	#Checks to see if the current block is valid
-	#NEEDS MORE CONDITIONS
-	def validate_block
-		valid_flag = 1
-		if compare_current_hash == 0
-			return 0
-		else
-			puts "Block is valid! :)"
-			return 1
-		end
-	end
-		
 	
 	#GETTERS
 	def get_block_number
@@ -213,5 +156,9 @@ class Block
 	
 	def set_current_hash(c)
 		@current_hash = c
+	end
+	
+	def set_calculated_hash(c)
+		@calculated_hash = c
 	end
 end
